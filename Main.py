@@ -1,5 +1,21 @@
 import json
 import pyfiglet
+import requests
+
+with open('config.json') as config:
+    config = json.load(config)
+
+def LoginAs():
+    session = requests.Session()
+    session.cookies['.ROBLOSECURITY'] = config['cookie']
+    UserName = session.get('https://www.roblox.com/my/settings/json').json()['Name']
+    UserId = session.get('https://www.roblox.com/my/settings/json').json()['UserId']
+    print("Login As (.ROBLOSECURITY) : "+UserName+" | "+str(UserId))
+
+if config['cookie'] == "YOUR_.ROBLOSECURITY_HERE" :
+    print("Can't login , Please edit config.json first")
+else :
+    LoginAs()
 
 def toascii(text):
     ascii_art = pyfiglet.figlet_format(text,font="standard")
