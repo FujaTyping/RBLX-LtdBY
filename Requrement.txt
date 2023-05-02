@@ -1,0 +1,7 @@
+Requrement
+
+- Python
+(https://www.python.org/downloads/)
+
+- .ROBLOSECURITY cookie
+(Use EditThisCookie Extension)
