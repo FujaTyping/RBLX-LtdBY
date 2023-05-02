@@ -1,4 +1,12 @@
 import json
+import pyfiglet
+
+def toascii(text):
+    ascii_art = pyfiglet.figlet_format(text,font="standard")
+    print(ascii_art)
+
+gentext = "RBLX LtdBY"
+toascii(gentext)
 
 print("Python Limited Buyer [By : FujaTyping]")
 print("0. Edit config.json\n1. DankoOfficial\n2. Zentred [Working]\n")

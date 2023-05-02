@@ -10,6 +10,7 @@ if %errorlevel% equ 0 (
 
     if "!Req!"=="y" (
         echo Installing all package file
+        pip install pyfiglet
         pip install requests
         pip install uuid
         echo All package has been install
