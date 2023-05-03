@@ -1,4 +1,5 @@
 @echo off
+title RBLX LtdBY
 echo Please install python before run this file
 where python >nul 2>nul
 if %errorlevel% equ 0 (
