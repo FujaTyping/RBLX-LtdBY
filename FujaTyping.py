@@ -18,7 +18,8 @@ class Bot:
 
     def item_info(self):
         receive_data = False
-        while receive_data == False:
+        retry = 0
+        while receive_data == False :
             try :
                 id_response = self.session.get(f'https://catalog.roblox.com/v1/catalog/items/{assetId}/details?itemType=Asset').json()
                 self.collectible_id = id_response['collectibleItemId']
@@ -33,13 +34,16 @@ class Bot:
                 self.description = item_data['description']
                 receive_data = True
                 print(">> [LOGS] - Receive data successfully : "+self.name+" | "+self.description)
+                retry = 0
             except :
-                print(">> [LOGS] - Can't receive item info")
+                print(">> [LOGS] - Can't receive item info ( Retry : "+retry+" )")
+                retry = retry + 1
                 time.sleep(1)
 
     def purchase_item(self):
         sent_requests = success = 0
-        while 1:
+        retry = 0
+        while 1 :
             try :
                 response = self.session.post(
                     f'https://apis.roblox.com/marketplace-sales/v1/item/{self.collectible_id}/purchase-item',
@@ -65,8 +69,11 @@ class Bot:
                 #if amount == success: break
                 if sent_requests >= 10: # 10 initial requests, assumes you are not ratelimited just for efficiency
                     time.sleep(7)
+
+                retry = 0
             except :
-                print(">> [LOGS] - Can't purchase item")
+                print(">> [LOGS] - Can't purchase item ( Retry : "+retry+" )")
+                retry = retry + 1
                 time.sleep(1)
 
 try :
@@ -74,4 +81,5 @@ try :
     a.item_info()
     a.purchase_item()
 except :
-    print(">> [LOGS] - Something happend")
+    print(">> [LOGS] - Something happend seem like collectibleId is wrong")
+    print(">> [LOGS] - Please check your collectibleId again")
