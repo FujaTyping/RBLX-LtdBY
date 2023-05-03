@@ -17,47 +17,61 @@ class Bot:
         return self.session.post('https://auth.roblox.com/v2/login').headers['x-csrf-token']
 
     def item_info(self):
-        try:
-            id_response = self.session.get(f'https://catalog.roblox.com/v1/catalog/items/{assetId}/details?itemType=Asset').json()
-            self.collectible_id = id_response['collectibleItemId']
-            item_data = self.session.post(
-                'https://apis.roblox.com/marketplace-items/v1/items/details',
-                json = {"itemIds": [self.collectible_id]}, headers = {'x-csrf-token': self.csrf_token()}
-            ).json()[0]
-            self.product_id = item_data['collectibleProductId']
-            self.asset_price = item_data['price']
-            self.seller_id = item_data['creatorId']
-        except:
-            print(">> [LOGS] - "+id_response)
+        receive_data = False
+        while receive_data == False:
+            try :
+                id_response = self.session.get(f'https://catalog.roblox.com/v1/catalog/items/{assetId}/details?itemType=Asset').json()
+                self.collectible_id = id_response['collectibleItemId']
+                item_data = self.session.post(
+                    'https://apis.roblox.com/marketplace-items/v1/items/details',
+                    json = {"itemIds": [self.collectible_id]}, headers = {'x-csrf-token': self.csrf_token()}
+                ).json()[0]
+                self.product_id = item_data['collectibleProductId']
+                self.asset_price = item_data['price']
+                self.seller_id = item_data['creatorId']
+                self.name = item_data['name']
+                self.description = item_data['description']
+                receive_data = True
+                print(">> [LOGS] - Receive data successfully : "+self.name+" | "+self.description)
+            except :
+                print(">> [LOGS] - Can't receive item info")
+                time.sleep(1)
 
     def purchase_item(self):
         sent_requests = success = 0
         while 1:
-            response = self.session.post(
-                f'https://apis.roblox.com/marketplace-sales/v1/item/{self.collectible_id}/purchase-item',
-                json = {
-                    "collectibleItemId": self.collectible_id,
-                    "expectedCurrency": 1,
-                    "expectedPrice": self.asset_price,
-                    "expectedPurchaserId": str(self.user_id),
-                    "expectedPurchaserType": "User",
-                    "expectedSellerId": 1,
-                    "expectedSellerType": "User",
-                    "idempotencyKey": str(uuid.uuid4()),
-                    "collectibleProductId": self.product_id
-                },
-                headers = {
-                    'X-CSRF-TOKEN': self.csrf_token()
-                }
-            )
-            print(">> [LOGS] - "+response.text)
-            if response.status_code == 200:
-                success += 1
-            sent_requests += 1
-            #if amount == success: break
-            if sent_requests >= 10: # 10 initial requests, assumes you are not ratelimited just for efficiency
-                time.sleep(7)
-        
-a = Bot()
-a.item_info()
-a.purchase_item()
+            try :
+                response = self.session.post(
+                    f'https://apis.roblox.com/marketplace-sales/v1/item/{self.collectible_id}/purchase-item',
+                    json = {
+                        "collectibleItemId": self.collectible_id,
+                        "expectedCurrency": 1,
+                        "expectedPrice": self.asset_price,
+                        "expectedPurchaserId": str(self.user_id),
+                        "expectedPurchaserType": "User",
+                        "expectedSellerId": 1,
+                        "expectedSellerType": "User",
+                        "idempotencyKey": str(uuid.uuid4()),
+                        "collectibleProductId": self.product_id
+                    },
+                    headers = {
+                        'X-CSRF-TOKEN': self.csrf_token()
+                    }
+                )
+                print(">> [LOGS] - "+response.text)
+                if response.status_code == 200:
+                    success += 1
+                sent_requests += 1
+                #if amount == success: break
+                if sent_requests >= 10: # 10 initial requests, assumes you are not ratelimited just for efficiency
+                    time.sleep(7)
+            except :
+                print(">> [LOGS] - Can't purchase item")
+                time.sleep(1)
+
+try :
+    a = Bot()
+    a.item_info()
+    a.purchase_item()
+except :
+    print(">> [LOGS] - Something happend")
