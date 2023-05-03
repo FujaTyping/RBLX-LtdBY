@@ -25,7 +25,7 @@ gentext = "RBLX LtdBY"
 toascii(gentext)
 
 print("Python Limited Buyer [By : FujaTyping]")
-print("0. Edit config.json\n1. DankoOfficial\n2. Zentred [Working]\n")
+print("0. Edit config.json\n1. DankoOfficial\n2. Zentred [Working]\n3. FujaTyping Custom [Working]\n")
 
 Want = int(input("Enter number : "))
 
@@ -50,5 +50,8 @@ elif Want == 1 :
 elif Want == 2 :
     print("You select : Zentred\n")
     exec(open("Zentred.py").read())
+elif Want == 3 :
+    print("You select : FujaTyping Custom\n")
+    exec(open("FujaTyping.py").read())
 else :
-    print("Please select number 0 or 1 or 2")
+    print("Please select number 0 or 1 or 2 or 3")
