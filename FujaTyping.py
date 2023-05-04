@@ -62,7 +62,10 @@ class Bot:
                         'X-CSRF-TOKEN': self.csrf_token()
                     }
                 )
-                print(">> [LOGS] - "+response.text)
+
+                response_data = json.loads(response.text)
+                print(">> [LOGS] - Request ("+str(sent_requests)+") : "+response_data['purchaseResult']+response_data['errorMessage'])
+        
                 if response.status_code == 200:
                     success += 1
                 sent_requests += 1
@@ -71,7 +74,7 @@ class Bot:
                     time.sleep(7)
 
                 retry = 0
-            except :
+            except Exception as e :
                 print(">> [LOGS] - Can't purchase item (Retry : "+str(retry)+")")
                 retry += 1
                 time.sleep(1)
