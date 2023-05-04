@@ -3,6 +3,8 @@ import requests, uuid, time, json, threading
 with open('config.json') as config:
     config = json.load(config)
 
+retry = 0
+
 assetId = input('>> Enter assetid: ')
 print(">> You don't have to enter howmany times to buy")
 #amount = int(input('>> Purchase howmany times: '))
@@ -18,7 +20,6 @@ class Bot:
 
     def item_info(self):
         receive_data = False
-        retry = 0
         while receive_data == False :
             try :
                 id_response = self.session.get(f'https://catalog.roblox.com/v1/catalog/items/{assetId}/details?itemType=Asset').json()
@@ -36,13 +37,12 @@ class Bot:
                 print(">> [LOGS] - Receive data successfully : "+self.name+" | "+self.description)
                 retry = 0
             except :
-                print(">> [LOGS] - Can't receive item info ( Retry : "+retry+" )")
-                retry = retry + 1
+                print(">> [LOGS] - Can't receive item info (Retry : "+str(retry)+")")
+                retry += 1
                 time.sleep(1)
 
     def purchase_item(self):
         sent_requests = success = 0
-        retry = 0
         while 1 :
             try :
                 response = self.session.post(
@@ -72,14 +72,17 @@ class Bot:
 
                 retry = 0
             except :
-                print(">> [LOGS] - Can't purchase item ( Retry : "+retry+" )")
-                retry = retry + 1
+                print(">> [LOGS] - Can't purchase item (Retry : "+str(retry)+")")
+                retry += 1
                 time.sleep(1)
 
-try :
-    a = Bot()
-    a.item_info()
-    a.purchase_item()
-except :
-    print(">> [LOGS] - Something happend seem like collectibleId is wrong")
-    print(">> [LOGS] - Please check your collectibleId again")
+while 1 :
+    try :
+        a = Bot()
+        a.item_info()
+        retry = 0
+        a.purchase_item()
+    except :
+        print(">> [LOGS] - Something happend seem like collectibleId is wrong (Retry : "+str(retry)+")")
+        retry += 1
+        time.sleep(1)
