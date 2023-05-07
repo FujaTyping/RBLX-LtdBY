@@ -1,19 +1,28 @@
 import json
 import pyfiglet
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 with open('config.json') as config:
     config = json.load(config)
 
+if config['ENV'] == True :
+    cookies = os.getenv("ROBLOSECURITY")
+else :
+    cookies = config['cookie']
+
 def LoginAs():
     session = requests.Session()
-    session.cookies['.ROBLOSECURITY'] = config['cookie']
+    session.cookies['.ROBLOSECURITY'] = cookies
     UserName = session.get('https://www.roblox.com/my/settings/json').json()['Name']
     UserId = session.get('https://www.roblox.com/my/settings/json').json()['UserId']
     print("Login As (.ROBLOSECURITY) : "+UserName+" | "+str(UserId))
 
-if config['cookie'] == "YOUR_.ROBLOSECURITY_HERE" :
-    print("Can't login , Please edit config.json first")
+if cookies == "YOUR_.ROBLOSECURITY_HERE" :
+    print("Can't login , Please edit .ROBLOSECURITY cookie first")
 else :
     LoginAs()
 

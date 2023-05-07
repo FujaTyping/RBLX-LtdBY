@@ -2,9 +2,18 @@ from requests import get, Session
 from uuid import uuid4
 from threading import Thread
 import json
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 with open('config.json') as config:
     config = json.load(config)
+
+if config['ENV'] == True :
+    cookies = os.getenv("ROBLOSECURITY")
+else :
+    cookies = config['cookie']
 
 class S:
     userID = 0
@@ -39,7 +48,7 @@ def autobuy():
     else:
         print(f">> [LOGS] - BOUGHT ITEM SUCCESSFULLY")
 
-cookie = config['cookie']
+cookie = cookies
 id = input(">> Assest ID: ")
 threads = input(">> Threads (Amount to buy/second): ")
 session = Session()

@@ -1,7 +1,16 @@
 import requests, uuid, time, json, threading
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 with open('config.json') as config:
     config = json.load(config)
+
+if config['ENV'] == True :
+    cookies = os.getenv("ROBLOSECURITY")
+else :
+    cookies = config['cookie']
 
 retry = 0
 
@@ -12,7 +21,7 @@ print(">> You don't have to enter howmany times to buy")
 class Bot:
     def __init__(self):
         self.session = requests.Session()
-        self.session.cookies['.ROBLOSECURITY'] = config['cookie']
+        self.session.cookies['.ROBLOSECURITY'] = cookies
         self.user_id = self.session.get('https://www.roblox.com/my/settings/json').json()['UserId']
 
     def csrf_token(self):

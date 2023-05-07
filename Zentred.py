@@ -1,7 +1,16 @@
 import requests, uuid, time, json, threading
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 with open('config.json') as config:
     config = json.load(config)
+
+if config['ENV'] == True :
+    cookies = os.getenv("ROBLOSECURITY")
+else :
+    cookies = config['cookie']
 
 assetId = input('>> Enter assetid: ')
 amount = int(input('>> Purchase howmany times: '))
@@ -9,7 +18,7 @@ amount = int(input('>> Purchase howmany times: '))
 class Bot:
     def __init__(self):
         self.session = requests.Session()
-        self.session.cookies['.ROBLOSECURITY'] = config['cookie']
+        self.session.cookies['.ROBLOSECURITY'] = cookies
         self.user_id = self.session.get('https://www.roblox.com/my/settings/json').json()['UserId']
 
     def csrf_token(self):
